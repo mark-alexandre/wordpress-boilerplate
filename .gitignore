@@ -1,6 +1,6 @@
-# ignore everything in the "wp-content" directory, except "themes" directory
-wp-content/*
-!wp-content/themes/
+wordpress/
+wordpress/wp-content/*
+!wordpress/wp-content/themes/
 
 # packages
 node_modules/
@@ -13,3 +13,6 @@ vendor/
 
 # PHPStorm
 .idea/
+
+# Docker
+.docker/db/
