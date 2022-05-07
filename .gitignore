@@ -1,6 +1,7 @@
-wordpress/
-wordpress/wp-content/*
-!wordpress/wp-content/themes/
+wordpress/*
+!wordpress/wp-content/
+wordpress/wp-content/index.php
+wordpress/wp-content/plugins/
 
 # packages
 node_modules/
