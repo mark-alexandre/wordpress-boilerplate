@@ -1,0 +1,36 @@
+{
+  "type": "project",
+  "config": {
+    "vendor-dir": "vendor",
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  },
+  "extra": {
+    "wordpress-install-dir": "wordpress",
+    "installer-paths": {
+      "wordpress/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+      "wordpress/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+    }
+  },
+  "require": {
+    "wpackagist-plugin/advanced-custom-fields": "*",
+    "wpackagist-plugin/backup-backup": "*",
+    "wpackagist-plugin/complianz-gdpr": "*",
+    "wpackagist-plugin/custom-post-type-ui": "*",
+    "wpackagist-plugin/duplicate-page": "*",
+    "wpackagist-plugin/simple-custom-post-order": "*",
+    "wpackagist-plugin/wordpress-seo": "*",
+    "wpackagist-plugin/wpforms-lite": "*",
+    "wpackagist-plugin/webp-converter-for-media": "*"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^6.0"
+  },
+  "repositories":[
+    {
+      "type":"composer",
+      "url":"https://wpackagist.org"
+    }
+  ]
+}

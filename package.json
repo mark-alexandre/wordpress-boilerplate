@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "gulp-cli": "^2.3.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.4",
+    "browser-sync": "^2.27.9",
+    "gulp": "^4.0.2",
+    "gulp-group-css-media-queries": "^1.2.2",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^9.0.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-strip-comments": "^2.5.2",
+    "gulp-watch": "^5.0.1",
+    "sass": "^1.50.0"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "scripts": {
+    "scss": "gulp compile:sass",
+    "watch": "gulp compile:watch"
+  }
+}

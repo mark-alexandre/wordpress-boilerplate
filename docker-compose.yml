@@ -1,0 +1,88 @@
+version: '3'
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  wordpress:
+    container_name: ${COMPOSE_PROJECT_NAME}-wordpress
+    build:
+      context: ./.docker
+      dockerfile: wordpress.dockerfile
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment: # Connect WordPrerss to the database
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}:${WORDPRESS_DB_PORT}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
+    volumes:
+      # save the content of WordPress an enable local modifications
+      - ./wordpress:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wordpress.rule=Host(`${COMPOSE_PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.wordpress.entrypoints=web"
+
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}-db
+    image: mysql:5.7
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      # Connect WordPrerss to the database
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
+      MYSQL_USER: ${WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      # Persist the database on disk
+      - ./.docker/db:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    container_name: ${COMPOSE_PROJECT_NAME}-phpmyadmin
+    image: phpmyadmin:5.1.0-apache
+    restart: unless-stopped
+    ports:
+      - '8200:8080'
+    environment:
+      PMA_HOST: ${WORDPRESS_DB_HOST}
+      PMA_PORT: ${WORDPRESS_DB_PORT}
+      PMA_USER: ${WORDPRESS_DB_USER}
+      PMA_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`pma-${COMPOSE_PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=web"
+
+  traefik:
+    container_name: ${COMPOSE_PROJECT_NAME}-traefik
+    image: traefik:v2.5.2
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - app-network

@@ -1,0 +1,68 @@
+version: '3'
+
+silent: true
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+vars:
+  COLOR_START: echo "\n\033[94m
+  COLOR_END: \033[0m\n\n";
+  ETAPE_0: "Prérequis : Démontage des potentiels containers en fonction sur le projet"
+  ETAPE_1: "Étape 1 : Configuration du projet"
+  ETAPE_2: "Étape 2 : Création et montage des containers Docker"
+  ETAPE_3: "Étape 3 : Installation des packages NPM et Composer"
+  ETAPE_4: "Étape 4 : Suppression des thèmes par défaut de Wordpress"
+  SUCCESS: "Toutes les opérations se sont déroulées avec succès !"
+
+tasks:
+  # Full project's installation
+  install-project:
+    desc: Initialisation complète du projet
+    cmds:
+      # Prérequis
+      - php -r '{{.COLOR_START}} {{.ETAPE_0}} {{.COLOR_END}}'
+      - docker compose down && docker compose down
+      # Étape 1
+      - php -r '{{.COLOR_START}} {{.ETAPE_1}} {{.COLOR_END}}'
+      - task: generate-env-file
+      # Étape 2
+      - php -r '{{.COLOR_START}} {{.ETAPE_2}} {{.COLOR_END}}'
+      - docker compose up -d
+      # Étape 3
+      - php -r '{{.COLOR_START}} {{.ETAPE_3}} {{.COLOR_END}}'
+      - task: install-packages
+      # Étape 4
+      - php -r '{{.COLOR_START}} {{.ETAPE_4}} {{.COLOR_END}}'
+      - rm -R wordpress/wp-content/themes/*/
+      # Message de succès
+      - php -r '{{.COLOR_START}} {{.SUCCESS}} {{.COLOR_END}}'
+
+  # Display all the tasks
+  help:
+    desc: Affichage de toutes les tasks de ce projet
+    cmds:
+      - ./task.exe -l
+
+  # Generate the .env file needed for the project
+  generate-env-file:
+    desc: Génère le fichier .env nécessaire à la configuration du projet
+    cmds:
+      - php .binaries/makeEnvFile.php
+
+  # NPM and Composer installation
+  install-packages:
+    desc: Installation des packages composer et npm
+    cmds:
+      - npm i
+      - php ".binaries/composer.phar" install
+
+  # NPM Watch
+  watch:
+    desc: Lancement d'un npm watch
+    cmds:
+      - npm run watch
+
+  # Generate CSS
+  css:
+    desc: Génération des CSS
+    cmds:
+      - npm run scss
