@@ -11,6 +11,7 @@ vars:
   ETAPE_2: "Étape 2 : Création et montage des containers Docker"
   ETAPE_3: "Étape 3 : Installation des packages NPM et Composer"
   ETAPE_4: "Étape 4 : Suppression des thèmes par défaut de Wordpress"
+  ETAPE_5: "Étape 5 : Activation de Symfony var_dumper"
   SUCCESS: "Toutes les opérations se sont déroulées avec succès !"
 
 tasks:
@@ -33,6 +34,10 @@ tasks:
       # Étape 4
       - php -r '{{.COLOR_START}} {{.ETAPE_4}} {{.COLOR_END}}'
       - rm -R wordpress/wp-content/themes/*/
+      # Étape 5
+      - php -r '{{.COLOR_START}} {{.ETAPE_5}} {{.COLOR_END}}'
+      - cp .docker/index.php wordpress/
+      - cp .docker/var-dumper.php wordpress/
       # Message de succès
       - php -r '{{.COLOR_START}} {{.SUCCESS}} {{.COLOR_END}}'
 

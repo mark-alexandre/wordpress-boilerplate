@@ -25,7 +25,7 @@
     "wpackagist-plugin/webp-converter-for-media": "*"
   },
   "require-dev": {
-    "symfony/var-dumper": "^6.0"
+    "symfony/var-dumper": "^5.4.9"
   },
   "repositories":[
     {
